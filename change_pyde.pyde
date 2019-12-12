@@ -154,13 +154,15 @@ class newPlayer(object):
         self.left = 0
         self.right = 0
         self.speed = 10
-        self.h = 20
-        self.w = 20
+        self.h = 80
+        self.w = 120
+        self.img1= loadImage(path+"/images/"+"spaceship1.png")
 
 
     def player(self):
         fill(0)
-        rect(self.x, self.y, self.w, self.h)
+      #  rect(self.x, self.y, self.w, self.h)
+        image(self.img1,self.x,self.y,self.w,self.h)
         self.healthbar.display()
         
     # Function for movement and boundary
@@ -313,27 +315,20 @@ def draw():
     game.display()
     a.check_for_display()
     a.display()
+    
+    if game.p1.x==a.x and game.p1.y==a.y:
+        if a.ability==img_health:
+            game.p1.speed+=50
+        
+        if a.ability==img_speed:
+            game.p1.speed+=50
+    
+        if a.ability==img_shield:
+            game.p1.speed+=50
 
-    # if p.update(self.x)==a.position(self.x):
-    #     if a.ability==img_health1:
-    #         p.newPlayer.self.healthbar+=10        
-    #     if a.ability == img_speed:
-    #         p.update.self.speed+=10    
-    #     if a.ability == img_shield:
-    #         p.newPlayer.self.healthbar+=1000
-            
-            
         
         
-    
-    
-#   if position of ability and player equals
-#    if speed img 
 
-    # if health and if shjield
-
-    
-    
     
     
 def keyPressed():
