@@ -6,6 +6,16 @@ global cHeight
 cWidth = 1400
 cHeight = 1000
 
+img_health=loadImage(path+"/images/"+"health.png")
+img_speed=loadImage(path+"/images/"+"speed.png")
+img_shield=loadImage(path+"/images/"+"shield.png")
+
+skills=[img_health, img_speed, img_shield]
+
+skill1=random.randint(1,500)
+skill2=random.randint(1,500)
+
+
 
 class Game():
     def __init__(self):
@@ -16,7 +26,13 @@ class Game():
         self.barrier_height = random.randint(20, (cHeight//10))
         self.b = Barrier(self.barrier_x, self.barrier_y, self.barrier_height)
         self.win = 0
-        
+    """    self.blocks=[] 
+for i in range(7):
+            a=random.randint()
+            b=random.randint()
+            
+            self.blocks.append(Barrier())"""
+                
     def display(self):
         if self.win == 0:
             self.p1.player()
@@ -39,12 +55,12 @@ class Game():
             
         elif self.win == 1:
             text("Player 1 has won!", 600, 400)
-            textSize(26);
+            textSize(32)
             
         
         elif self.win == 2:
             text("Player 2 has won!", 600, 400)
-            textSize(26);
+            textSize(32)
             
     # def barrier_appear(self, barrier_x, barrier_y):
         
@@ -190,7 +206,12 @@ class Barrier(object):
 
     def display(self):
         # image(self.img, sel.x, self.y)
+        fill(255)
         rect(self.x, self.y, self.w, self.h)
+    
+
+        
+        
 
 class Bullets(object):
     # x and y are starting coordinates and z dir
@@ -218,14 +239,30 @@ class Bullets(object):
 
 
 class Abilities(object):
-    # x-speed
-    # y-shield
-    # z-health
 
-    def __init__(self, x, y, z):
+    def __init__(self, x, y,ability):
         self.x = x
         self.y = y
-        self.z = z
+        self.ability=ability
+        self.display_ability = False
+        self.start_display_frame = 0
+
+    def change_abilitity_position(self):
+        self.ability=skills[random.randint(0,2)]
+        self.x = random.randint(100,1000)
+        self.y = random.randint(100,1000)
+        
+    def display(self):
+        if frameCount - self.start_display_frame == 100:
+            self.display_ability = False
+        if self.display_ability:
+            image(self.ability,self.x,self.y, 40, 40)
+            
+    def check_for_display(self):
+        if frameCount % 200 == 0:
+            self.display_ability = True
+            self.change_abilitity_position()
+            self.start_display_frame = frameCount
 
 
 class HealthBar(object):
@@ -259,15 +296,43 @@ class HealthBar(object):
 
 def setup():
     size(cWidth, cHeight)
-    global game, barriers
+    global game, barriers, img1
     game = Game()
+   # img1= loadImage(path+"/images/"+"backgroundimage.png")
 
   # barriers = Barrier()
-    
+ability=skills[random.randint(0,2)]
+a = Abilities(skill1,skill2,ability)
+
 
 def draw():
+    global img1
     background(100)
+  #  image(img1,0,0,1400,1000)
+
     game.display()
+    a.check_for_display()
+    a.display()
+
+    # if p.update(self.x)==a.position(self.x):
+    #     if a.ability==img_health1:
+    #         p.newPlayer.self.healthbar+=10        
+    #     if a.ability == img_speed:
+    #         p.update.self.speed+=10    
+    #     if a.ability == img_shield:
+    #         p.newPlayer.self.healthbar+=1000
+            
+            
+        
+        
+    
+    
+#   if position of ability and player equals
+#    if speed img 
+
+    # if health and if shjield
+
+    
     
     
     
@@ -279,3 +344,4 @@ def keyReleased():
     game.key_no()
 
    # barriers.display()
+#restart
