@@ -6,7 +6,7 @@ global cHeight
 cWidth = 1400
 cHeight = 1000
 
-img_health=loadImage(path+"/images/"+"health.png")
+img_health=loadImage(path+"/images/"+"health1.png")
 img_speed=loadImage(path+"/images/"+"speed.png")
 img_shield=loadImage(path+"/images/"+"shield.png")
 
@@ -316,15 +316,27 @@ def draw():
     a.check_for_display()
     a.display()
     
-    if game.p1.x==a.x and game.p1.y==a.y:
+    #if game.p1.x==a.x and game.p1.y==a.y:
+        
+    if (game.p1.x <= a.x) and (a.x <= game.p1.x + game.p1.w) and (game.p1.y <= a.y) and (a.y <= game.p1.y +game.p1.h):
         if a.ability==img_health:
-            game.p1.speed+=50
+            game.p1.speed+=20
         
         if a.ability==img_speed:
-            game.p1.speed+=50
+            game.p1.speed+=20
     
         if a.ability==img_shield:
-            game.p1.speed+=50
+            game.p1.speed+=20
+        
+    if (game.p2.x <= a.x) and (a.x <= game.p2.x + game.p2.w) and (game.p2.y <= a.y) and (a.y <= game.p2.y +game.p2.h):
+        if a.ability==img_health:
+            game.p2.speed+=20
+        
+        if a.ability==img_speed:
+            game.p2.speed+=20
+    
+        if a.ability==img_shield:
+            game.p2.speed+=20
 
         
         
