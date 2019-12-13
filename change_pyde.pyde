@@ -4,7 +4,8 @@ path = os.getcwd()
 global cWidth
 global cHeight
 cWidth = 1400
-cHeight = 1000
+cHeight = 875
+
 
 img_health=loadImage(path+"/images/"+"health1.png")
 img_speed=loadImage(path+"/images/"+"speed.png")
@@ -154,8 +155,8 @@ class newPlayer(object):
         self.left = 0
         self.right = 0
         self.speed = 10
-        self.h = 80
-        self.w = 120
+        self.h = 40
+        self.w = 90
         self.img1= loadImage(path+"/images/"+"spaceship1.png")
 
 
@@ -300,7 +301,7 @@ def setup():
     size(cWidth, cHeight)
     global game, barriers, img1
     game = Game()
-   # img1= loadImage(path+"/images/"+"backgroundimage.png")
+  #  img1= loadImage(path+"/images/"+"back1.png")
 
   # barriers = Barrier()
 ability=skills[random.randint(0,2)]
@@ -310,7 +311,7 @@ a = Abilities(skill1,skill2,ability)
 def draw():
     global img1
     background(100)
-  #  image(img1,0,0,1400,1000)
+#    image(img1,0,0,1400,1000)
 
     game.display()
     a.check_for_display()
@@ -320,23 +321,24 @@ def draw():
         
     if (game.p1.x <= a.x) and (a.x <= game.p1.x + game.p1.w) and (game.p1.y <= a.y) and (a.y <= game.p1.y +game.p1.h):
         if a.ability==img_health:
-            game.p1.speed+=20
+            game.p1.healthbar.z+=1
         
         if a.ability==img_speed:
-            game.p1.speed+=20
+            game.p1.speed+=2
     
         if a.ability==img_shield:
-            game.p1.speed+=20
+            game.p1.speed+=2
         
     if (game.p2.x <= a.x) and (a.x <= game.p2.x + game.p2.w) and (game.p2.y <= a.y) and (a.y <= game.p2.y +game.p2.h):
         if a.ability==img_health:
-            game.p2.speed+=20
+            #game.p2.speed+=20
+            game.p2.healthbar.z+=2
         
         if a.ability==img_speed:
-            game.p2.speed+=20
+            game.p2.speed+=2
     
         if a.ability==img_shield:
-            game.p2.speed+=20
+            game.p2.speed+=2
 
         
         
