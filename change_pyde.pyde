@@ -166,10 +166,13 @@ class Game():
     # Shooting keys for the players    
         if key == 'm':
             self.p2.shoot()
+            self.shoot1.rewind()
             self.shoot1.play()
         if key == 'v':
             self.p1.shoot()
+            self.shoot1.rewind()
             self.shoot1.play()
+            
     
     
     def key_no(self):
@@ -214,6 +217,8 @@ class newPlayer(object):
         self.h = 40
         self.w = 90
         self.img1 = loadImage(path+"/images/"+"spaceship1.png")
+        self.img2=loadImage(path+"/images/"+"spaceship.png")
+
         self.lastSpeed = 0
         self.lastShield = 0
     
@@ -224,15 +229,20 @@ class newPlayer(object):
 
     def getSpeed(self):
         self.lastSpeed = time.time()
-        
+            
     def getShield(self):
         self.lastShield = time.time()
+        
+        
 
     # Players image 
     def player(self):
         fill(0)
       #  rect(self.x, self.y, self.w, self.h)
-        image(self.img1,self.x,self.y,self.w,self.h)
+        if time.time() - self.lastShield <= 5:
+            image(self.img2,self.x,self.y,self.w,self.h)
+        else:
+            image(self.img1,self.x,self.y,self.w,self.h)
         self.healthbar.display()
         
         
@@ -402,29 +412,25 @@ def setup():
 def draw():
     background(100)
     game.display()
-    a.check_for_display()
-    a.display()
+    if game.win!=3:
+        a.check_for_display()
+        a.display()
 #    if game.win==2 or game.win==1:
         
 
     #condition for picking up the images
     if (game.p1.x <= a.x) and (a.x <= game.p1.x + game.p1.w) and (game.p1.y <= a.y) and (a.y <= game.p1.y +game.p1.h):
-        if a.ability==img_health:
-            game.p1.healthbar.z+=1
+        if a.ability==img_health:        
+            game.p1.healthbar.z+=10
         
         if a.ability==img_speed:
             
-        #    global p
             game.p1.getSpeed()
-       #     m = millis()- p
-        #    seconds= m/1000
-         #   print(seconds)
-         #   if seconds==5:
-           #     game.p1.speed=10
-                
             
     
         if a.ability==img_shield:
+            
+            
 
             game.p1.getShield()
             
@@ -435,7 +441,7 @@ def draw():
         if a.ability==img_health:
             #game.p2.speed+=20
             game.p2.healthbar.z+=2
-        
+            
         if a.ability==img_speed:
             game.p2.getSpeed()
     
