@@ -1,16 +1,27 @@
+add_library('minim')
 import random
-import os
+import os, time
+audioPlayer = Minim(this)
+#importing of used methods 
+
 path = os.getcwd()
+#global variables
 global cWidth
 global cHeight
+
+#cWidth and cHeight defines the parameter of the screen
 cWidth = 1400
 cHeight = 1000
+PERIOD = 5
+
+#Loading images of the abilities
 img_health=loadImage(path+"/images/"+"health1.png")
 img_speed=loadImage(path+"/images/"+"speed.png")
 img_shield=loadImage(path+"/images/"+"shield.png")
 
-skills=[img_health, img_speed, img_shield]
 
+#variables to manage ability image appear randomly in terms of position and type
+skills=[img_health, img_speed, img_shield]
 skill1=random.randint(1,500)
 skill2=random.randint(1,500)
 
@@ -26,6 +37,9 @@ class Game():
         self.b2 = Barrier(2)
         self.b3 = Barrier(3)
         self.win = 3
+        self.space = audioPlayer.loadFile(path+"/sounds/backgroundsound.mp3")
+        self.shoot1=audioPlayer.loadFile(path+"/sounds/bullets.mp3")
+   
         
         
     def display(self):
@@ -56,35 +70,41 @@ class Game():
                 self.p2.a[k].display()
                 
         elif self.win == 3:
-            background(0)
+
+            background(255)
             textSize(30)
             if self.win == 3 and cWidth//2.5 < mouseX < cWidth//2.5 + 220 and cHeight//3 < mouseY < cHeight//3+50:
                 fill(102,178,225)
             else:
-                fill(225)
+                fill(50)
             text(" PLAY GAME ", cWidth//2.5+10, cHeight//3+40)
                 
-            fill(225)
-            text(" How to play: Aim of the game, kill your opponent!\n Abilities, including extra health, force field and rapid fire, will pop up on the board.\n Pass over them to gain the abilities.\n Barriers to protect you will appear randomly on the display and disappear at random.\n P.S: Player 1 use WASD keys to move and V key to shoot.\n \t \t Player 2 use arrow keys to move and M key to shoot!", 70, cHeight//3+140)
-            
+            fill(0)
+            textFont(Superclarendon)
+            textSize(25)
+            text(" How to play: Aim of the game, kill your opponent!\n\n Abilities, including extra health, force field and rapid fire, will pop up on the board.\n Pass over them to gain the abilities.\n Barriers to protect you will appear randomly on the display and disappear at random.\n\n P.S: Player 1 use WASD keys to move and V key to shoot.\n \t \t      Player 2 use arrow keys to move and M key to shoot! \n In order to restart the game click to the screen", 70, cHeight//3+140)
+          
+       # Condition if the first player will win - shows an corresponding image,i.e. will have zeeo healthbar     
         elif self.win == 1:
-            background(0)
+            background(255)
             textSize(30)
-            fill(255,0,0)
+            textFont(Superclarendon)
+            fill(0,0,0)
             text("Player 1 has won!", cWidth//2.5+10, cHeight//2.5+10)
             
-        
+        # Condition for the second player
         elif self.win == 2:
-            background(0)
+            background(255)
             textSize(30)
-            fill(255,0,0)
+            textFont(Superclarendon)
+            fill(0,0,0)
             text("Player 2 has won!", cWidth//2.5+10, cHeight//2.5+10)
-            
-            
+
+    # This function checks whether bullets hitted first players        
     def check_hit(self):
         for i in self.p1.a:
             if (self.p2.x <= i.x) and (i.x <= self.p2.x + self.p2.w) and (self.p2.y <= i.y) and (i.y <= self.p2.y + self.p2.h):
-                self.p2.healthbar.z -= 10
+                self.p2.getHit()
                 self.p1.a.remove(i)
             elif (self.b0.x <= i.x) and (i.x <= self.b0.x + 10) and (self.b0.y <= i.y) and (i.y <= self.b0.y + self.b0.h):
                 self.p1.a.remove(i)
@@ -94,10 +114,10 @@ class Game():
                 self.p1.a.remove(i)
             elif (self.b3.x <= i.x) and (i.x <= self.b3.x + 10) and (self.b3.y <= i.y) and (i.y <= self.b3.y + self.b3.h):
                 self.p1.a.remove(i)
-        
+        # Similar with the second player
         for i in self.p2.a:
             if (self.p1.x <= i.x) and (i.x <= self.p1.x + self.p2.w) and (self.p1.y <= i.y) and (i.y <= self.p1.y +self.p1.h):
-                self.p1.healthbar.z -= 10
+                self.p1.getHit()
                 self.p2.a.remove(i)
             elif (self.b0.x <= i.x) and (i.x <= self.b0.x + 10) and (self.b0.y <= i.y) and (i.y <= self.b0.y + self.b0.h):
                 self.p2.a.remove(i)
@@ -108,18 +128,22 @@ class Game():
             elif (self.b3.x <= i.x) and (i.x <= self.b3.x + 10) and (self.b3.y <= i.y) and (i.y <= self.b3.y + self.b3.h):
                 self.p2.a.remove(i)
                 
-                
+   # Winning condition based on the healthbar( if healthbar is zero)          
     def won(self):
         if self.p1.healthbar.z == 0:
             self.win = 2
-        elif self.p2.healthbar.z == 0:
+            self.p1.healthbar.z = 200
+        if self.p2.healthbar.z == 0:
             self.win = 1
+            self.p1.healthbar.z=200
+            self.p2.healthbar.z = 200
             
+    #function for ckicking by mouse that directs user from menu to the game        
     def mouse_click(self):
         if self.win == 3 and cWidth//2.5 < mouseX < cWidth//2.5 + 220 and cHeight//3 < mouseY < cHeight//3+50:
             self.win = 0
 
-            
+    #Controls movement keyboard keys by the second player    
     def key_go(self):
         if keyCode == UP:
             self.p2.up = 1
@@ -129,7 +153,7 @@ class Game():
             self.p2.left = 1
         if keyCode == RIGHT:
             self.p2.right = 1
-    
+    # For the first player
         if key == 'w':
             self.p1.up = 1
         if key == 's':
@@ -139,10 +163,13 @@ class Game():
         if key == 'd':
             self.p1.right = 1
             
+    # Shooting keys for the players    
         if key == 'm':
             self.p2.shoot()
+            self.shoot1.play()
         if key == 'v':
             self.p1.shoot()
+            self.shoot1.play()
     
     
     def key_no(self):
@@ -167,6 +194,7 @@ class Game():
 
 class newPlayer(object):
     def __init__(self, id):
+        #empty list to add bullets appearance to it
         self.a = []
         self.id = id
         if (id == 0):
@@ -177,7 +205,7 @@ class newPlayer(object):
             self.x = cWidth*3/4
             self.y = cHeight*3/4
             self.healthbar = HealthBar(1200)
-            
+        #variables for easier check whether some keyboards are pressed
         self.up = 0
         self.down = 0
         self.left = 0
@@ -186,21 +214,39 @@ class newPlayer(object):
         self.h = 40
         self.w = 90
         self.img1 = loadImage(path+"/images/"+"spaceship1.png")
+        self.lastSpeed = 0
+        self.lastShield = 0
+    
+    def getHit(self):
+        now = time.time()
+        if now - self.lastShield > PERIOD:
+            self.healthbar.z -= 10
 
+    def getSpeed(self):
+        self.lastSpeed = time.time()
+        
+    def getShield(self):
+        self.lastShield = time.time()
 
-
+    # Players image 
     def player(self):
         fill(0)
       #  rect(self.x, self.y, self.w, self.h)
         image(self.img1,self.x,self.y,self.w,self.h)
         self.healthbar.display()
         
+        
+    # Movement of players with initial established speed    
     def update(self):
-
+        now = time.time()
+        if now - self.lastSpeed <= PERIOD:
+            self.speed = 14
+        else:
+            self.speed = 10
         self.x = self.x + (self.right - self.left) * self.speed
         self.y = self.y + (self.down - self.up) * self.speed
         
-        
+    #
     def player1_side(self):
             if not (self.x >= 0):
                 self.x = 0
@@ -220,11 +266,13 @@ class newPlayer(object):
                 self.y = 0
             if not (self.y <= (cHeight - self.h)):
                 self.y = (cHeight - self.h)
-
+    #Shooting function that adds bullets to the above "a" list
     def shoot(self):
         self.a.append(Bullets(self.x, self.y, self.id))
+   
         
-
+        
+# Barrier class
 class Barrier(object):
     def __init__(self, id):
         self.id = id
@@ -240,6 +288,7 @@ class Barrier(object):
         self.h = 70
         self.x = random.randint(20, (cWidth-20))
         self.y = random.randint(20, (cHeight-120))
+
 
     def display(self):
         # image(self.img, sel.x, self.y)
@@ -257,8 +306,7 @@ class Barrier(object):
         
 
 class Bullets(object):
-    # x and y are starting coordinates and z dir
-
+    # x and y are starting coordinates and z is the direction
     def __init__(self, x, y, z):
         self.x = x
         self.y = y
@@ -266,6 +314,8 @@ class Bullets(object):
         self.w = 10
         self.h = 10
 
+        
+    #controls the direction off the bullet either from left-right or right-left
     def positionupdate(self):
         if self.z == 1:
             self.x -= 1 * 10
@@ -276,13 +326,15 @@ class Bullets(object):
         if self.x<0 or self.y<0 or self.x>cWidth or self.y>cHeight:
             self.a.remove()
             
+    #image of the bullets    
     def display(self):
-        fill(0)
+        fill(255)
         rect(self.x, self.y, self.w, self.h)
+    
 
 
 class Abilities(object):
-
+    # x and y is the coordinates that is randomly assigned and ability is for choosing random type of the ability
     def __init__(self, x, y,ability):
         self.x = x
         self.y = y
@@ -295,6 +347,8 @@ class Abilities(object):
         self.x = random.randint(100,1000)
         self.y = random.randint(100,1000)
         
+        
+    # displaying the images for some period of time
     def display(self):
         if frameCount - self.start_display_frame == 100:
             self.display_ability = False
@@ -330,34 +384,52 @@ class HealthBar(object):
         stroke(0)
         noFill()
         rect(self.h, 0, self.z, 20)
+ 
         
+               
+                             
 ability=skills[random.randint(0,2)]
 a = Abilities(skill1,skill2,ability)
 start_display_frame = 0
-
+#setup
 def setup():
     size(cWidth, cHeight)
-    global game, barriers
+    global game, barriers, Superclarendon
     game = Game()
+    Superclarendon=loadFont("Superclarendon-Light-48.vlw")
     
-
+#draw
 def draw():
     background(100)
     game.display()
     a.check_for_display()
     a.display()
-    
-    #if game.p1.x==a.x and game.p1.y==a.y:
+#    if game.win==2 or game.win==1:
         
+
+    #condition for picking up the images
     if (game.p1.x <= a.x) and (a.x <= game.p1.x + game.p1.w) and (game.p1.y <= a.y) and (a.y <= game.p1.y +game.p1.h):
         if a.ability==img_health:
             game.p1.healthbar.z+=1
         
         if a.ability==img_speed:
-            game.p1.speed=14
+            
+        #    global p
+            game.p1.getSpeed()
+       #     m = millis()- p
+        #    seconds= m/1000
+         #   print(seconds)
+         #   if seconds==5:
+           #     game.p1.speed=10
+                
+            
     
         if a.ability==img_shield:
-            game.p1.speed=14
+
+            game.p1.getShield()
+            
+        a.change_abilitity_position()
+
         
     if (game.p2.x <= a.x) and (a.x <= game.p2.x + game.p2.w) and (game.p2.y <= a.y) and (a.y <= game.p2.y +game.p2.h):
         if a.ability==img_health:
@@ -365,24 +437,31 @@ def draw():
             game.p2.healthbar.z+=2
         
         if a.ability==img_speed:
-            game.p2.speed=14
+            game.p2.getSpeed()
     
         if a.ability==img_shield:
-            game.p2.speed=14
-
+            game.p2.getShield()
+        
+        a.change_abilitity_position()
+   
       
 def mouseClicked():
+    if game.win==2 or game.win==1:
+        game.win=3
+        game.p1.a=[]
+        game.p2.a=[]
+        
     game.mouse_click()
     
     
 def keyPressed():
     game.key_go()
+    game.space.play()
     
 
 def keyReleased():
     game.key_no()
 
-#def mousePressed():
-  #  if game.win==2 or game.win==1:
-   #     game.win=3
+   
+        
         
