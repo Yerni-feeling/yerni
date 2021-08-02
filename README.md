@@ -4,7 +4,7 @@
 
 [![Processing](https://img.shields.io/badge/processing-3.5.4-green)](https://processing.org/)
 
-![Demo](./assets/demo.gif)
+![Demo](./assets/game.gif)
 
 ## Getting Started
 
